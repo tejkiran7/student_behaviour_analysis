@@ -6,12 +6,19 @@ import os
 import sys
 import numpy as np
 import pandas as pd
-import dill #used to dump python objects to file
+import dill #used to dump python objects to file , and load python objects
 from sklearn.metrics import r2_score,mean_absolute_error,mean_squared_error
 from sklearn.model_selection import RandomizedSearchCV,GridSearchCV
 from src.logger import logging
 
 from src.exception import CustomException
+
+def load_object(file_path):
+    try:
+        with open(file_path,"rb") as file_obj:
+            return dill.load(file_obj)
+    except Exception as e:
+        raise CustomException(e,sys)
 
 def save_object(file_path,obj):
     try:
@@ -47,7 +54,7 @@ def evaluate_models(X_train,y_train,X_test,y_test,models,params):
             model.fit(X_train,y_train)
 
             # model.fit(X_train,y_train)  #Train Model
-            
+
             y_train_pred = model.predict(X_train)
             y_test_pred = model.predict(X_test)
 
